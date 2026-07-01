@@ -414,13 +414,13 @@ $('btn-connect').addEventListener('click', async () => {
       body: JSON.stringify(CREDS)
     });
     const data = await res.json();
-    if (data.loggedIn) {
+    if (data.loggedIn || data.uuid) {
       $('status-dot').className    = 'dot on';
-      $('status-text').textContent = `Connected · ${data.isCloud ? 'Cloud' : 'Local'}`;
+      $('status-text').textContent = `Connected · ${data.isCloud ? 'Cloud' : 'Local'} · ${data.uuid ? data.uuid.substring(0,8)+'…' : ''}`;
       log('ok', `Connected — isCloud=${data.isCloud}`);
       buildSidebar();
     } else {
-      log('fail', 'Login failed — check credentials');
+      log('fail', `Login failed${data.error ? ' — ' + data.error : ' — check credentials'}`);
       $('status-dot').className = 'dot off';
     }
   } catch(e) { log('fail', `Error: ${e.message}`); }
