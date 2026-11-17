@@ -1,7 +1,7 @@
 # csharp-openhab-test-suite test app
 
 A single web page that runs the testers of
-[csharp-openhab-test-suite](https://github.com/Michdo93/csharp-openhab-test-suite) 2.0.0 through the
+[csharp-openhab-test-suite](https://github.com/Michdo93/csharp-openhab-test-suite) 2.0.1 through the
 [backend](https://github.com/Michdo93/csharp-openhab-test-suite-backend): ItemTester, ThingTester,
 RuleTester, ChannelTester, PersistenceTester and SitemapTester with all their methods.
 
