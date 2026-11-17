@@ -78,7 +78,7 @@
 <header>
   <span class="logo">openHAB</span>
   <span class="subtitle">csharp-openhab-test-suite</span>
-  <span class="badge">C# .NET</span>
+  <span class="badge">C11</span>
   <div class="status-pill">
     <div class="dot" id="status-dot"></div>
     <span id="status-text">Disconnected</span>
@@ -121,6 +121,8 @@
 </div>
 
 <script>
+// "30|30.0" in Expected State = several accepted states (expectedStates)
+const exp = v => !v ? null : (v.includes('|') ? v.split('|').map(x => x.trim()) : v);
 const BACKEND = 'https://csharp-openhab-test-suite-backend.onrender.com';
 let CREDS = null;
 let stats = { total:0, ok:0, fail:0, pend:0 };
@@ -166,7 +168,7 @@ const TESTERS = {
       { name:'checkItemIsType',    label:'Check Item Is Type',
         fields:[ {id:'itemName', label:'Item Name', ph:'testSwitch', cls:'w-md'},
                  {id:'itemType', label:'Type', type:'select',
-                  opts:['Switch','Dimmer','Color','Contact','Rollershutter','Number','Player','DateTime','Location','Image','String','Group']} ],
+                  opts:['Switch','Dimmer','Color','Contact','Rollershutter','Number','Number:Temperature','Number:Power','Number:Energy','Player','DateTime','Location','Image','String','Group']} ],
         build: f => ({tester:'ItemTester', method:'checkItemIsType', params:[f.itemName, f.itemType]}) },
       { name:'checkItemHasState',  label:'Check Item Has State',
         fields:[ {id:'itemName', label:'Item Name', ph:'testSwitch', cls:'w-md'},
@@ -177,43 +179,43 @@ const TESTERS = {
                  {id:'command',      label:'Command', type:'select', opts:['ON','OFF']},
                  {id:'expectedState',label:'Expected State', ph:'ON', cls:'w-sm'},
                  {id:'timeout',      label:'Timeout (s)', ph:'10', cls:'w-sm'} ],
-        build: f => ({tester:'ItemTester', method:'testSwitch', params:[f.itemName,f.command,f.expectedState||null,parseInt(f.timeout)||10]}) },
+        build: f => ({tester:'ItemTester', method:'testSwitch', params:[f.itemName,f.command,exp(f.expectedState),parseInt(f.timeout)||10]}) },
       { name:'testDimmer',         label:'Test Dimmer Item',
         fields:[ {id:'itemName',     label:'Item Name', ph:'testDimmer', cls:'w-md'},
                  {id:'command',      label:'Command', ph:'50', cls:'w-sm'},
                  {id:'expectedState',label:'Expected State', ph:'50', cls:'w-sm'},
                  {id:'timeout',      label:'Timeout (s)', ph:'10', cls:'w-sm'} ],
-        build: f => ({tester:'ItemTester', method:'testDimmer', params:[f.itemName,f.command,f.expectedState||null,parseInt(f.timeout)||10]}) },
+        build: f => ({tester:'ItemTester', method:'testDimmer', params:[f.itemName,f.command,exp(f.expectedState),parseInt(f.timeout)||10]}) },
       { name:'testColor',          label:'Test Color Item',
         fields:[ {id:'itemName',     label:'Item Name', ph:'testColor', cls:'w-md'},
                  {id:'command',      label:'Command (H,S,B)', ph:'240,100,100', cls:'w-md'},
                  {id:'expectedState',label:'Expected State', ph:'240,100,100', cls:'w-md'},
                  {id:'timeout',      label:'Timeout (s)', ph:'10', cls:'w-sm'} ],
-        build: f => ({tester:'ItemTester', method:'testColor', params:[f.itemName,f.command,f.expectedState||null,parseInt(f.timeout)||10]}) },
+        build: f => ({tester:'ItemTester', method:'testColor', params:[f.itemName,f.command,exp(f.expectedState),parseInt(f.timeout)||10]}) },
       { name:'testContact',        label:'Test Contact Item',
         fields:[ {id:'itemName',     label:'Item Name', ph:'testContact', cls:'w-md'},
                  {id:'update',       label:'Update', type:'select', opts:['OPEN','CLOSED']},
                  {id:'expectedState',label:'Expected State', ph:'OPEN', cls:'w-sm'},
                  {id:'timeout',      label:'Timeout (s)', ph:'10', cls:'w-sm'} ],
-        build: f => ({tester:'ItemTester', method:'testContact', params:[f.itemName,f.update,f.expectedState||null,parseInt(f.timeout)||10]}) },
+        build: f => ({tester:'ItemTester', method:'testContact', params:[f.itemName,f.update,exp(f.expectedState),parseInt(f.timeout)||10]}) },
       { name:'testRollershutter',  label:'Test Rollershutter Item',
         fields:[ {id:'itemName',     label:'Item Name', ph:'testRollershutter', cls:'w-md'},
                  {id:'command',      label:'Command', type:'select', opts:['UP','DOWN','STOP','MOVE','0','50','100']},
                  {id:'expectedState',label:'Expected State', ph:'100', cls:'w-sm'},
                  {id:'timeout',      label:'Timeout (s)', ph:'10', cls:'w-sm'} ],
-        build: f => ({tester:'ItemTester', method:'testRollershutter', params:[f.itemName,f.command,f.expectedState||null,parseInt(f.timeout)||10]}) },
+        build: f => ({tester:'ItemTester', method:'testRollershutter', params:[f.itemName,f.command,exp(f.expectedState),parseInt(f.timeout)||10]}) },
       { name:'testNumber',         label:'Test Number Item',
         fields:[ {id:'itemName',     label:'Item Name', ph:'testNumber', cls:'w-md'},
                  {id:'command',      label:'Value', ph:'42', cls:'w-sm'},
                  {id:'expectedState',label:'Expected State', ph:'42', cls:'w-sm'},
                  {id:'timeout',      label:'Timeout (s)', ph:'10', cls:'w-sm'} ],
-        build: f => ({tester:'ItemTester', method:'testNumber', params:[f.itemName,f.command,f.expectedState||null,parseInt(f.timeout)||10]}) },
+        build: f => ({tester:'ItemTester', method:'testNumber', params:[f.itemName,f.command,exp(f.expectedState),parseInt(f.timeout)||10]}) },
       { name:'testPlayer',         label:'Test Player Item',
         fields:[ {id:'itemName',     label:'Item Name', ph:'testPlayer', cls:'w-md'},
                  {id:'command',      label:'Command', type:'select', opts:['PLAY','PAUSE','NEXT','PREVIOUS','REWIND','FASTFORWARD']},
                  {id:'expectedState',label:'Expected State', ph:'PLAY', cls:'w-sm'},
                  {id:'timeout',      label:'Timeout (s)', ph:'10', cls:'w-sm'} ],
-        build: f => ({tester:'ItemTester', method:'testPlayer', params:[f.itemName,f.command,f.expectedState||null,parseInt(f.timeout)||10]}) },
+        build: f => ({tester:'ItemTester', method:'testPlayer', params:[f.itemName,f.command,exp(f.expectedState),parseInt(f.timeout)||10]}) },
       { name:'testDateTime',       label:'Test DateTime Item',
         fields:[ {id:'itemName',     label:'Item Name', ph:'testDateTime', cls:'w-md'},
                  {id:'command',      label:'ISO-8601 Value', ph:'2024-01-15T08:30:00+0000', cls:'w-lg'},
@@ -229,7 +231,20 @@ const TESTERS = {
                  {id:'command',      label:'Value', ph:'Hello openHAB', cls:'w-lg'},
                  {id:'expectedState',label:'Expected State', ph:'Hello openHAB', cls:'w-lg'},
                  {id:'timeout',      label:'Timeout (s)', ph:'10', cls:'w-sm'} ],
-        build: f => ({tester:'ItemTester', method:'testString', params:[f.itemName,f.command,f.expectedState||null,parseInt(f.timeout)||10]}) },
+        build: f => ({tester:'ItemTester', method:'testString', params:[f.itemName,f.command,exp(f.expectedState),parseInt(f.timeout)||10]}) },
+      { name:'testImage',          label:'Test Image Item',
+        fields:[ {id:'itemName',     label:'Item Name', ph:'testImage', cls:'w-md'},
+                 {id:'command',      label:'Data URI', ph:'data:image/png;base64,iVBORw0KGgo…', cls:'w-lg'},
+                 {id:'timeout',      label:'Timeout (s)', ph:'10', cls:'w-sm'} ],
+        build: f => ({tester:'ItemTester', method:'testImage', params:[f.itemName,f.command,null,parseInt(f.timeout)||10]}) },
+      { name:'getGroupMembers',    label:'Get Group Members',
+        fields:[ {id:'groupName', label:'Group Name', ph:'testGroup', cls:'w-md'} ],
+        build: f => ({tester:'ItemTester', method:'getGroupMembers', params:[f.groupName]}) },
+      { name:'checkGroupMemberState', label:'Check Group Member State',
+        fields:[ {id:'groupName',  label:'Group Name', ph:'testGroup', cls:'w-md'},
+                 {id:'memberName', label:'Member Name', ph:'testSwitch', cls:'w-md'},
+                 {id:'state',      label:'Expected State', ph:'ON', cls:'w-sm'} ],
+        build: f => ({tester:'ItemTester', method:'checkGroupMemberState', params:[f.groupName,f.memberName,f.state]}) },
       { name:'isGroupItem',        label:'Is Group Item?',
         fields:[ {id:'itemName', label:'Item Name', ph:'testGroup', cls:'w-md'} ],
         build: f => ({tester:'ItemTester', method:'isGroupItem', params:[f.itemName]}) },
@@ -254,6 +269,15 @@ const TESTERS = {
                  {id:'statusToCheck', label:'Expected Status', type:'select',
                   opts:['ONLINE','OFFLINE','PENDING','UNKNOWN','UNINITIALIZED','ERROR']} ],
         build: f => ({tester:'ThingTester', method:'isThingStatus', params:[f.thingUID,f.statusToCheck]}) },
+      { name:'getThingStatus',      label:'Get Thing Status',
+        fields:[ {id:'thingUID', label:'Thing UID', ph:'astro:sun:local', cls:'w-lg'} ],
+        build: f => ({tester:'ThingTester', method:'getThingStatus', params:[f.thingUID]}) },
+      { name:'isThingPending',      label:'Is Thing PENDING?',
+        fields:[ {id:'thingUID', label:'Thing UID', ph:'astro:sun:local', cls:'w-lg'} ],
+        build: f => ({tester:'ThingTester', method:'isThingPending', params:[f.thingUID]}) },
+      { name:'isThingUnknown',      label:'Is Thing UNKNOWN?',
+        fields:[ {id:'thingUID', label:'Thing UID', ph:'astro:sun:local', cls:'w-lg'} ],
+        build: f => ({tester:'ThingTester', method:'isThingUnknown', params:[f.thingUID]}) },
       { name:'isThingError',        label:'Is Thing in ERROR?',
         fields:[ {id:'thingUID', label:'Thing UID', ph:'astro:sun:local', cls:'w-lg'} ],
         build: f => ({tester:'ThingTester', method:'isThingError', params:[f.thingUID]}) },
@@ -299,8 +323,9 @@ const TESTERS = {
       { name:'testRuleExecution',  label:'Test Rule Execution',
         fields:[ {id:'ruleUID',      label:'Rule UID', ph:'my-rule-1', cls:'w-lg'},
                  {id:'expectedItem', label:'Expected Item', ph:'testColor', cls:'w-md'},
-                 {id:'expectedValue',label:'Expected Value', ph:'240,100,100', cls:'w-md'} ],
-        build: f => ({tester:'RuleTester', method:'testRuleExecution', params:[f.ruleUID,f.expectedItem,f.expectedValue]}) },
+                 {id:'expectedValue',label:'Expected Value', ph:'240,100,100', cls:'w-md'},
+                 {id:'wait',         label:'Wait (s)', ph:'2', cls:'w-sm'} ],
+        build: f => ({tester:'RuleTester', method:'testRuleExecution', params:[f.ruleUID,f.expectedItem,f.expectedValue,parseFloat(f.wait)||2]}) },
     ]
   },
 
